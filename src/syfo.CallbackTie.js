@@ -4,7 +4,7 @@ CallbackTie = function(cb, options) {
   t.options = (typeof options == 'number') ? {waitFor: options} : options;
   if(!t.options) {t.options = {};}
   if(typeof t.options.waitFor == 'undefined') {t.options.waitFor = 0;}
-  t.options.keepCalling = 0;
+  t.options.keepCalling = false;
   t.cb = cb;
   t.timesWrapperCalled = 0;
   t.timesCallbackCalled = 0;
@@ -14,11 +14,12 @@ CallbackTie = function(cb, options) {
   };
 
   t.callbackWrapper = function() {
-    t.timesCalled++;
+    t.timesWrapperCalled++;
 
     if(t.timesWrapperCalled == t.options.waitFor ||
        t.keepCalling && (t.timeCalled > t.optionsWaitFor)) {
-       t.cb.apply(self, arguments);
+         t.timesCallbackCalled++; //###before or after the apply?
+         t.cb.apply(self, arguments);
     }
   };
   

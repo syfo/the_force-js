@@ -76,13 +76,12 @@ CallbackableMock = function() {
 };
 
 callback = function() { 
-  
   throw new Error(arguments[0]);
 };
 
 $(function() {
   module("CallbackTie");
-  test("will not fire on first, will fire on second", function() {
+  test("can explicitly state how many callbacks to tie together", function() {
     var tie = new CallbackTie(callback, 2);
     var cm1 = new CallbackableMock(tie.wait(), 'cm1');
     var cm2 = new CallbackableMock(tie.wait(), 'cm2');
@@ -93,13 +92,13 @@ $(function() {
       cm2.trigger();
     }
     catch(e) {
-      error = e;
+      error = e.message;
     }
     
-    equal(error.message, 'cm2', 'uses queue(), called the second time');
+    equal(error, 'cm2');
   });
 
-  test("do not have to specify how many callback invocations to wait for", function() {
+  test("do not have to state how many callbacks to tie together", function() {
     var tie = new CallbackTie(callback);
     var cm1 = new CallbackableMock(tie.queue(), 'cm1');
     var cm2 = new CallbackableMock(tie.queue(), 'cm2');
@@ -110,9 +109,9 @@ $(function() {
       cm2.trigger();
     }
     catch(e) {
-      error = e;
+      error = e.message;
     }
     
-    equal(error.message, 'cm2', 'uses queue(), called the second time');
+    equal(error, 'cm2', 'uses queue(), called the second time');
   });
 });
