@@ -67,7 +67,7 @@
 //QUnit tests
 CallbackableMock = function() {
   var t = this;
-  t.cb = arguments[0]
+  t.cb = arguments[0];
   t.msg = arguments[1];
   
   t.trigger = function() {
@@ -80,9 +80,8 @@ callback = function() {
   throw new Error(arguments[0]);
 };
 
-$(document).ready(function() {
+$(function() {
   module("CallbackTie");
-
   test("will not fire on first, will fire on second", function() {
     var tie = new CallbackTie(callback, 2);
     var cm1 = new CallbackableMock(tie.wait(), 'cm1');
@@ -90,15 +89,30 @@ $(document).ready(function() {
     
     var error = null;
     try {
-      cm2.trigger();
       cm1.trigger();
+      cm2.trigger();
     }
     catch(e) {
       error = e;
     }
-
-    console.log(error.message);
     
-    equal(error.message, 'cm1', error.stack);
+    equal(error.message, 'cm2', 'uses queue(), called the second time');
+  });
+
+  test("do not have to specify how many callback invocations to wait for", function() {
+    var tie = new CallbackTie(callback);
+    var cm1 = new CallbackableMock(tie.queue(), 'cm1');
+    var cm2 = new CallbackableMock(tie.queue(), 'cm2');
+    
+    var error = null;
+    try {
+      cm1.trigger();
+      cm2.trigger();
+    }
+    catch(e) {
+      error = e;
+    }
+    
+    equal(error.message, 'cm2', 'uses queue(), called the second time');
   });
 });
