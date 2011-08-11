@@ -22,7 +22,7 @@
 (function($) {
   var DynamicCarousel = function(e, options) {
     var t = this;
-    t.pane = $(e);x
+    t.pane = $(e);
     t.options = options || {};
     t.options = $.extend({trimLeft: 0, trimRight: 0}, options);
     t.firstElementShown = 0;
