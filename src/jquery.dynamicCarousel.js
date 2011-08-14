@@ -82,9 +82,9 @@
 
       if(t.elements().length == 1) {
         t.showFirst(1);
+      } else {
+        t.triggerEvents();
       }
-
-      t.triggerEvents();
     };
     
     t.unshift = function(html, id) {
@@ -118,8 +118,6 @@
         element.remove()
         t.setContentWidthFromElementWidth();
         t.repositionFirstElementAfterRemove();
-      
-        t.triggerEvents();
         
         return element;
       } else {
@@ -133,7 +131,6 @@
   
     t.scroll = function(offset) {
       t.showFirst(t.firstElementShown + offset);
-      t.triggerEvents();
     };
 
     t.triggerEvents = function() {
@@ -154,6 +151,7 @@
       i = t.boundedFirstElement(i);
       t.firstElementShown = i;
       t.setContentOffsetFromFirstElement();
+      t.triggerEvents();
     };
     
     t.boundedFirstElement = function(i) {
