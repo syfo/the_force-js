@@ -163,7 +163,7 @@
     };
 
     t.setContentOffsetFromFirstElement = function() {
-      t.content.css('margin-left', (1-t.firstElementShown)*t.elementWidth);
+      t.content.css('margin-left', (1-t.firstElementShown)*t.elementWidth - t.options.trimLeft + "px");
     };
     
     t.setPaneWidthFromElementsShown = function() {
