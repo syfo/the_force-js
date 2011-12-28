@@ -34,7 +34,7 @@
       t.elementWidth = t.options.elementWidth || 0;
       t.elementsShown = t.options.elementsShown || 5;
 
-      t.pane.css({overflow: 'hidden'});
+      t.pane.css({overflow: 'hidden', 'position' : 'relative'});
       t.setPaneWidthFromElementsShown();
       t.setContentWidthFromElementWidth
       t.pane.data('dynamicCarousel', t);
@@ -163,7 +163,7 @@
     };
 
     t.setContentOffsetFromFirstElement = function() {
-      t.content.css('margin-left', (1-t.firstElementShown)*t.elementWidth - t.options.trimLeft + "px");
+      t.content.animate({'margin-left': (1-t.firstElementShown)*t.elementWidth - t.options.trimLeft + "px"}, {queue:false, duration:500});
     };
     
     t.setPaneWidthFromElementsShown = function() {
