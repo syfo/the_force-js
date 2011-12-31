@@ -20,9 +20,10 @@
 */
 
 (function($) {
-  var DynamicCarousel = function(e, options) {
+  var DynamicCarousel = function(where, options) {
     var t = this;
-    t.pane = $(e);
+    t.where = $(where);
+    t.pane = $('<div></div>').appendTo($(where));
     t.options = options || {};
     t.options = $.extend({trimLeft: 0, trimRight: 0, trimTop: 0, trimBottom: 0, direction: 'horizontal'}, options);
     t.vertical = (t.options.direction == "vertical");
@@ -39,7 +40,7 @@
       t.pane.css({overflow: 'hidden', 'position' : 'relative'});
       t.setPaneSizeFromElementsShown();
       t.setContentSizeFromElementSize()
-      t.pane.data('dynamicCarousel', t);
+      t.where.data('dynamicCarousel', t);
             
       t.initDefaultScrollButtonBehavior();
       t.triggerEvents();
