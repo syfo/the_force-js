@@ -24,7 +24,8 @@
     var t = this;
     t.pane = $(e);
     t.options = options || {};
-    t.options = $.extend({trimLeft: 0, trimRight: 0}, options);
+    t.options = $.extend({trimLeft: 0, trimRight: 0, trimTop: 0, trimBottom: 0, direction: 'horizontal'}, options);
+    t.vertical = (t.options.direction == "vertical");
     t.firstElementShown = 0;
     
     t.init = function() {
@@ -32,11 +33,12 @@
       t.content = t.pane.children().slice(0,1);
   
       t.elementWidth = t.options.elementWidth || 0;
+      t.elementHeight = t.options.elementHeight || 0;
       t.elementsShown = t.options.elementsShown || 5;
 
       t.pane.css({overflow: 'hidden', 'position' : 'relative'});
-      t.setPaneWidthFromElementsShown();
-      t.setContentWidthFromElementWidth
+      t.setPaneSizeFromElementsShown();
+      t.setContentSizeFromElementSize()
       t.pane.data('dynamicCarousel', t);
             
       t.initDefaultScrollButtonBehavior();
@@ -65,7 +67,13 @@
     };
     
     t.insert = function(index, html, id) {
-      var el = $('<li></li>').css({'float': 'left', 'width': t.elementWidth, 'overflow': 'hidden'}).append($(html));
+      var el = $('<li></li>')
+        .css({
+          'float': (t.vertical ? 'none' : 'left'), 
+          'height': t.elementHeight || 'auto', 
+          'width': t.elementWidth || 'auto', 
+          'overflow': 'hidden'})
+        .append($(html));
       if(id) { 
         if(t.elementWithId(id)) { return false; }
         
@@ -78,7 +86,7 @@
       } else {
         t.content.append(el);
       }
-      t.setContentWidthFromElementWidth();
+      t.setContentSizeFromElementSize();
 
       if(t.elements().length == 1) {
         t.showFirst(1);
@@ -116,7 +124,7 @@
       
       if(element) {
         element.remove()
-        t.setContentWidthFromElementWidth();
+        t.setContentSizeFromElementSize();
         t.repositionFirstElementAfterRemove();
         
         return element;
@@ -163,15 +171,27 @@
     };
 
     t.setContentOffsetFromFirstElement = function() {
-      t.content.animate({'margin-left': (1-t.firstElementShown)*t.elementWidth - t.options.trimLeft + "px"}, {queue:false, duration:500});
+      if(t.vertical) {
+        t.content.animate({'margin-top': (1-t.firstElementShown)*t.elementHeight - t.options.trimTop + "px"}, {queue:false, duration:500});
+      } else {
+        t.content.animate({'margin-left': (1-t.firstElementShown)*t.elementWidth - t.options.trimLeft + "px"}, {queue:false, duration:500});
+      }
     };
     
-    t.setPaneWidthFromElementsShown = function() {
-      t.pane.css('width', t.elementsShown*t.elementWidth - t.options.trimLeft - t.options.trimRight);
+    t.setPaneSizeFromElementsShown = function() {
+      if(t.vertical) {
+        t.pane.css('height', t.elementsShown*t.elementHeight - t.options.trimTop - t.options.trimBottom);
+      } else {
+        t.pane.css('width', t.elementsShown*t.elementWidth - t.options.trimLeft - t.options.trimRight);
+      }
     };
     
-    t.setContentWidthFromElementWidth = function() {
-      t.content.css('width', (t.elements().length * t.elementWidth) + "px");
+    t.setContentSizeFromElementSize = function() {  
+      if(t.vertical) {
+        t.content.css('height', (t.elements().length * t.elementHeight) + "px");
+      } else {
+        t.content.css('width', (t.elements().length * t.elementWidth) + "px");
+      }
     }
     
     t.init();
